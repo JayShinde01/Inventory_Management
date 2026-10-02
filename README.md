@@ -1,302 +1,312 @@
-# 🏗️ Multi-Tier Inventory Management System on AWS
+# 🚗 Ambika Spare Parts — Inventory Management System
 
-A production-style **three-tier web application deployment on AWS** using an existing Inventory Management System built with **React.js, Node.js, and MySQL**.
+A full-stack **Inventory Management System** for managing automobile spare parts, inventory records, and related operations.
 
-The project demonstrates how the frontend, backend, and database can be separated into independent layers and securely connected using AWS networking and security services.
+The project is built using **React.js**, **Node.js**, and **MySQL**, and is designed around a **three-tier AWS deployment architecture**.
+
+## 🌐 Live Application
+
+**Live Demo:**  
+https://ambika-spare-parts.netlify.app/
+
+> The live link is provided as a demonstration of the application UI. The deployment architecture documented in this project is based on AWS services.
 
 ---
 
-## 📌 Project Overview
+# 🏗️ AWS Three-Tier Architecture
 
-This project deploys an Inventory Management System using a **three-tier architecture**:
+The application follows a three-tier architecture:
 
 ```text
-                         INTERNET
-                             │
-                             ▼
-                 ┌─────────────────────┐
-                 │ Application Load    │
-                 │ Balancer (ALB)      │
-                 └──────────┬──────────┘
-                            │
-                 ┌──────────┴──────────┐
-                 ▼                     ▼
-        ┌────────────────┐     ┌────────────────┐
-        │ React Frontend │     │ Node.js Backend│
-        │                │     │                │
-        │     EC2        │     │      EC2       │
-        └────────────────┘     └───────┬────────┘
-                                       │
-                                       ▼
-                              ┌─────────────────┐
-                              │ Amazon RDS      │
-                              │     MySQL       │
-                              └─────────────────┘
+                         ┌───────────────┐
+                         │    USERS      │
+                         └───────┬───────┘
+                                 │
+                                 ▼
+                    ┌────────────────────────┐
+                    │ Application Load        │
+                    │ Balancer (ALB)          │
+                    └────────────┬───────────┘
+                                 │
+                                 ▼
+                    ┌────────────────────────┐
+                    │       EC2 Instance      │
+                    │                         │
+                    │    Node.js Backend      │
+                    │       Port 3000         │
+                    └────────────┬───────────┘
+                                 │
+                                 │ MySQL : 3306
+                                 ▼
+                    ┌────────────────────────┐
+                    │      Amazon RDS         │
+                    │        MySQL            │
+                    │                         │
+                    │     Inventory DB        │
+                    └────────────────────────┘
+
+              React Frontend
+                    │
+                    ▼
+             Backend API / ALB
 ```
 
-The architecture separates application responsibilities into different layers:
+### Architecture Layers
 
-- **Presentation Layer** → React.js
-- **Application Layer** → Node.js / Express.js
-- **Database Layer** → Amazon RDS MySQL
+| Layer | Technology | AWS Service |
+|---|---|---|
+| Presentation | React.js | EC2 / Static hosting |
+| Application | Node.js + Express | Amazon EC2 |
+| Database | MySQL | Amazon RDS |
+| Traffic Distribution | HTTP | Application Load Balancer |
+| Networking | VPC | Amazon VPC |
+| Security | Firewall rules | Security Groups |
 
----
-
-## 🎯 Objective
-
-The objective of this project is to understand how a web application can be deployed using a **three-tier AWS architecture** where each major component is separated and independently managed.
-
-The project demonstrates:
-
-- Frontend deployment
-- Backend/API deployment
-- Managed MySQL database deployment
-- Application Load Balancer configuration
-- Security Group configuration
-- EC2-to-RDS communication
-- Frontend-to-backend communication
-- AWS networking fundamentals
+The database is isolated from direct public access and accepts MySQL traffic from the application layer. AWS recommends using security groups to control access between EC2 application servers and RDS databases.
 
 ---
 
-## 🛠️ Technologies Used
+# ✨ Features
 
-### Application
+- 📦 Inventory management
+- 🔧 Spare parts management
+- ➕ Add inventory items
+- ✏️ Update inventory information
+- 🗑️ Delete inventory items
+- 🔍 Search and manage spare parts
+- 📊 Inventory overview
+- 🌐 REST API based backend
+- 🗄️ MySQL database
+- ☁️ AWS-based deployment architecture
+
+---
+
+# 🛠️ Technology Stack
+
+## Frontend
 
 - React.js
+- JavaScript
+- HTML5
+- CSS3
+- REST API integration
+
+## Backend
+
 - Node.js
 - Express.js
-- MySQL
-- JavaScript
+- REST APIs
+- MySQL Driver
+- dotenv
 
-### AWS Services
+## Database
+
+- MySQL
+- Amazon RDS for MySQL
+
+## AWS
 
 - Amazon EC2
 - Amazon RDS
 - Application Load Balancer
-- Security Groups
 - Amazon VPC
-
-### Development Tools
-
-- Git
-- GitHub
-- npm
-- Linux / Ubuntu
+- Security Groups
 
 ---
 
-# 🏛️ Architecture
+# ☁️ AWS Deployment Architecture
 
-The application is divided into three major tiers.
+## 1. Amazon VPC
 
-### 1. Presentation Tier
+The application components are deployed within an AWS VPC.
 
-The React.js frontend provides the user interface for the Inventory Management System.
+The VPC provides the networking environment for:
 
-```text
-User
- ↓
-React Application
-```
-
-The frontend communicates with the backend API instead of directly accessing the database.
+- EC2
+- RDS
+- Application Load Balancer
+- Security Groups
 
 ---
 
-### 2. Application Tier
+## 2. Frontend Layer
 
-The Node.js backend contains the application logic and REST APIs.
+The frontend is developed using React.js.
+
+The React application communicates with the Node.js backend through HTTP API requests.
 
 ```text
 React Frontend
-       ↓
-Node.js / Express API
-       ↓
-Database
+      │
+      │ API Request
+      ▼
+Application Load Balancer
 ```
-
-The backend is deployed on an EC2 instance.
 
 ---
 
-### 3. Database Tier
+## 3. Backend Layer — Amazon EC2
 
-Amazon RDS hosts the MySQL database.
+The Node.js backend is deployed on an Amazon EC2 instance.
+
+The backend runs on:
 
 ```text
-Node.js Backend
-       ↓
-Amazon RDS
-       ↓
-MySQL Database
+Port: 3000
 ```
 
-The database is not directly exposed to the public internet.
+The backend provides REST APIs used by the React frontend.
+
+Example:
+
+```text
+GET    /api/...
+POST   /api/...
+PUT    /api/...
+DELETE /api/...
+```
+
+The exact API endpoints depend on the application implementation.
 
 ---
 
-# 🔐 Security Architecture
+# 🗄️ 4. Database Layer — Amazon RDS
 
-Security Groups are used to control communication between the different layers.
+The application uses **Amazon RDS for MySQL** as its database layer.
 
 Example configuration:
 
-| Component | Port | Allows Traffic From |
-|---|---:|---|
-| Application Load Balancer | 80 | Internet |
-| Frontend EC2 | 80 | ALB |
-| Backend EC2 | 3000 | Application traffic |
-| RDS MySQL | 3306 | Backend EC2 Security Group |
-| SSH | 22 | Administrator's IP |
-
-The important principle is:
-
 ```text
-Internet
-   ↓
-ALB
-   ↓
-Application
-   ↓
-Database
+Database Engine: MySQL
+Port: 3306
+Database: inventory
 ```
 
-The RDS database should **not** accept connections directly from the public internet.
-
----
-
-# 🚀 Deployment Process
-
-## Step 1 — Prepare the Existing Application
-
-The existing Inventory Management System contains:
-
-```text
-inventory-management/
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── ...
-│
-└── backend/
-    ├── routes/
-    ├── controllers/
-    ├── models/
-    ├── server.js
-    ├── package.json
-    └── ...
-```
-
-The frontend runs locally on:
-
-```text
-http://localhost:5173
-```
-
-The backend runs locally on:
-
-```text
-http://localhost:3000
-```
-
----
-
-# Step 2 — Configure Backend Environment Variables
-
-The backend uses environment variables for database configuration.
+The Node.js backend connects to RDS using environment variables.
 
 Example:
 
 ```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
+DB_HOST=<RDS-ENDPOINT>
+DB_USER=<RDS-USERNAME>
+DB_PASSWORD=<RDS-PASSWORD>
 DB_NAME=inventory
 DB_PORT=3306
 ```
 
-For AWS deployment, these values are changed to the RDS database configuration.
+Database credentials are not stored directly inside the source code.
 
-Example:
+---
 
-```env
-DB_HOST=inventory-db.xxxxxxxxx.ap-south-1.rds.amazonaws.com
-DB_USER=admin
-DB_PASSWORD=your_password
-DB_NAME=inventory
-DB_PORT=3306
-```
+# 🔐 5. Security Groups
 
-The `.env` file should never be committed to GitHub.
+Separate security groups are used to control communication between the application components.
 
-Example `.gitignore`:
+### ALB Security Group
+
+Allows:
 
 ```text
-.env
-node_modules/
+HTTP  : 80   → Internet
+HTTPS : 443  → Internet (if configured)
+```
+
+### Backend EC2 Security Group
+
+Allows:
+
+```text
+Port 3000 → Application Load Balancer
+SSH 22    → Administrator IP
+```
+
+### RDS Security Group
+
+Allows:
+
+```text
+MySQL 3306 → Backend EC2 Security Group
+```
+
+The database is not intended to accept direct public MySQL connections.
+
+This follows the AWS security-group model where the RDS security group can reference the application's EC2 security group as the allowed source.
+
+---
+
+# ⚖️ 6. Application Load Balancer
+
+An **Application Load Balancer (ALB)** is used to handle application traffic.
+
+```text
+Client
+   │
+   ▼
+ALB : 80
+   │
+   ▼
+EC2 : 3000
+   │
+   ▼
+RDS : 3306
+```
+
+The ALB forwards incoming requests to the registered EC2 target.
+
+AWS Application Load Balancers use listeners and target groups to route client requests to targets such as EC2 instances.
+
+---
+
+# 🔄 Application Request Flow
+
+The complete request flow is:
+
+```text
+1. User opens the React application
+                │
+                ▼
+2. React sends API request
+                │
+                ▼
+3. Application Load Balancer
+                │
+                ▼
+4. Node.js Backend on EC2
+                │
+                ▼
+5. Backend processes request
+                │
+                ▼
+6. Backend communicates with RDS MySQL
+                │
+                ▼
+7. RDS returns database result
+                │
+                ▼
+8. Node.js sends API response
+                │
+                ▼
+9. React displays the result
 ```
 
 ---
 
-# Step 3 — Create Amazon RDS MySQL
+# 🚀 Deployment Steps
 
-Create an Amazon RDS database using:
+## Step 1 — Prepare React Frontend
 
-```text
-Engine: MySQL
-Database Identifier: inventory-db
-Database Name: inventory
-```
-
-The RDS endpoint is generated by AWS.
-
-Example:
-
-```text
-inventory-db.xxxxxxxxx.ap-south-1.rds.amazonaws.com
-```
-
-The backend uses this endpoint to communicate with MySQL.
-
----
-
-# Step 4 — Configure RDS Security Group
-
-The RDS Security Group allows MySQL traffic on:
-
-```text
-TCP 3306
-```
-
-But instead of allowing the entire internet, access is restricted to the **Backend EC2 Security Group**.
-
-```text
-Backend EC2 Security Group
-          │
-          │ TCP 3306
-          ▼
-RDS Security Group
-```
-
-This prevents unauthorized direct database access.
-
----
-
-# Step 5 — Launch Backend EC2
-
-Launch an Ubuntu EC2 instance for the Node.js backend.
-
-Install Node.js and required dependencies.
-
-Clone the project:
+Build the React application:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY>
-cd inventory-management/backend
+npm install
+npm run build
 ```
+
+The production build is generated in the build output directory used by the project.
+
+---
+
+## Step 2 — Prepare Node.js Backend
 
 Install dependencies:
 
@@ -304,12 +314,12 @@ Install dependencies:
 npm install
 ```
 
-Configure the environment variables:
+Configure environment variables:
 
 ```env
-DB_HOST=<RDS_ENDPOINT>
-DB_USER=<RDS_USERNAME>
-DB_PASSWORD=<RDS_PASSWORD>
+DB_HOST=<RDS-ENDPOINT>
+DB_USER=<RDS-USERNAME>
+DB_PASSWORD=<RDS-PASSWORD>
 DB_NAME=inventory
 DB_PORT=3306
 ```
@@ -320,7 +330,7 @@ Start the backend:
 npm start
 ```
 
-The backend listens on:
+The backend runs on:
 
 ```text
 Port 3000
@@ -328,341 +338,306 @@ Port 3000
 
 ---
 
-# Step 6 — Test Backend → RDS Communication
+## Step 3 — Create AWS VPC
 
-After configuring the RDS endpoint, start the backend.
+Create or use an AWS VPC containing the application resources.
 
-The backend should successfully establish a connection to MySQL.
-
-Expected flow:
+The VPC provides networking between:
 
 ```text
-Node.js EC2
-     │
-     │ TCP 3306
-     ▼
-Amazon RDS MySQL
+ALB
+ │
+EC2
+ │
+RDS
 ```
-
-Test the backend API using:
-
-```text
-http://<EC2_PUBLIC_IP>:3000
-```
-
-or the appropriate API endpoint.
 
 ---
 
-# Step 7 — Deploy React Frontend
+## Step 4 — Create RDS MySQL
 
-Build the React application:
-
-```bash
-npm install
-npm run build
-```
-
-The production build is generated in:
-
-```text
-dist/
-```
-
-Configure the frontend API URL to point to the deployed backend/API endpoint rather than:
-
-```text
-localhost:3000
-```
-
-For example:
-
-```env
-VITE_API_URL=http://<BACKEND_ENDPOINT>
-```
-
-Then rebuild:
-
-```bash
-npm run build
-```
-
-The generated frontend is deployed to the frontend server/EC2.
-
----
-
-# Step 8 — Configure Application Load Balancer
-
-Create an **Application Load Balancer** to handle application traffic.
-
-The basic flow is:
-
-```text
-User
- │
- ▼
-Application Load Balancer
- │
- ▼
-Frontend / Application Target
-```
+Create an Amazon RDS MySQL database.
 
 Configure:
 
-### Load Balancer
-
 ```text
-Type: Application Load Balancer
-Scheme: Internet-facing
+Engine       → MySQL
+Database     → inventory
+Port         → 3306
 ```
 
-### Listener
-
-```text
-HTTP : 80
-```
-
-### Target Group
-
-Configure the target group with the appropriate frontend/application EC2 instance and health-check settings.
-
-The ALB forwards incoming HTTP traffic to the registered target.
+Obtain the RDS endpoint after the database becomes available.
 
 ---
 
-# Step 9 — Configure Security Groups
+## Step 5 — Create EC2 Instance
 
-Security Groups are configured so that only the required communication is allowed.
+Launch an EC2 instance for the Node.js backend.
+
+Install:
+
+- Node.js
+- npm
+- Git
+
+Clone the backend project:
+
+```bash
+git clone <YOUR-BACKEND-REPOSITORY>
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Configure the RDS environment variables and start the backend.
+
+---
+
+# 🔗 Backend → RDS Connection
+
+The backend uses the RDS endpoint instead of:
+
+```text
+localhost
+```
+
+Example:
+
+```env
+DB_HOST=inventory-db.xxxxxxxxxxxx.ap-south-1.rds.amazonaws.com
+DB_PORT=3306
+```
+
+The EC2 instance communicates with RDS over MySQL port `3306`.
+
+---
+
+# ⚖️ Step 6 — Configure Application Load Balancer
+
+Create:
+
+```text
+Load Balancer
+      ↓
+Target Group
+      ↓
+EC2 Instance
+```
+
+Example configuration:
+
+```text
+Load Balancer Type : Application Load Balancer
+Listener           : HTTP : 80
+Target Type        : Instance
+Target Port         : 3000
+Health Check       : HTTP
+```
+
+The ALB forwards requests to the Node.js backend running on EC2.
+
+---
+
+# 🩺 Health Check
+
+The target group checks whether the Node.js application is healthy.
 
 Example:
 
 ```text
-                INTERNET
-                    │
-                    │ HTTP : 80
-                    ▼
-             ┌──────────────┐
-             │     ALB      │
-             └──────┬───────┘
-                    │
-                    │ Application Traffic
-                    ▼
-             ┌──────────────┐
-             │     EC2      │
-             │  Node.js     │
-             └──────┬───────┘
-                    │
-                    │ MySQL : 3306
-                    ▼
-             ┌──────────────┐
-             │     RDS      │
-             │    MySQL     │
-             └──────────────┘
+ALB
+ │
+ ├── Health Check
+ │
+ ▼
+EC2 : 3000
 ```
+
+A healthy target allows the ALB to forward application traffic to the EC2 instance.
 
 ---
 
 # 🧪 Testing
 
-After deployment, test each layer separately.
+The complete architecture can be tested layer by layer.
 
-## Test 1 — Frontend
+### Frontend Test
 
-Open the ALB DNS name:
+Open:
+
+```text
+https://ambika-spare-parts.netlify.app/
+```
+
+### Backend Test
+
+Access the backend through the configured ALB endpoint.
+
+Example:
 
 ```text
 http://<ALB-DNS-NAME>
 ```
 
-The React application should load.
+### Database Test
 
----
-
-## Test 2 — Frontend → Backend
-
-Perform an operation from the frontend that requires an API call.
-
-For example:
+Perform an operation from the frontend such as:
 
 ```text
-Login
-Add Product
-Update Product
-Delete Product
-View Products
-```
-
-The request should reach the Node.js backend.
-
-```text
+Add Spare Part
+       ↓
 React
-  ↓
+       ↓
 ALB
-  ↓
-Node.js API
-```
-
----
-
-## Test 3 — Backend → RDS
-
-Perform an operation that reads or writes database data.
-
-For example:
-
-```text
-Add Product
-      ↓
-Node.js API
-      ↓
+       ↓
+Node.js / EC2
+       ↓
 RDS MySQL
-      ↓
-Data Stored
 ```
 
-Then refresh the inventory page and verify that the data is returned from the database.
+Verify that the record is successfully stored in RDS.
 
 ---
 
-# 🔄 Complete Request Flow
-
-The complete application flow is:
+# 📊 Three-Tier Communication
 
 ```text
-                    USER
-                      │
-                      ▼
-             ┌─────────────────┐
-             │      ALB        │
-             │  Port 80 / HTTP │
-             └────────┬────────┘
-                      │
-                      ▼
-             ┌─────────────────┐
-             │ React Frontend  │
-             │      EC2        │
-             └────────┬────────┘
-                      │
-                  API Request
-                      │
-                      ▼
-             ┌─────────────────┐
-             │ Node.js Backend │
-             │      EC2        │
-             │    Port 3000    │
-             └────────┬────────┘
-                      │
-                  SQL Query
-                      │
-                      ▼
-             ┌─────────────────┐
-             │ Amazon RDS      │
-             │     MySQL       │
-             │    Port 3306    │
-             └─────────────────┘
+┌─────────────────┐
+│  PRESENTATION   │
+│                 │
+│    React.js     │
+└────────┬────────┘
+         │
+         │ REST API
+         ▼
+┌─────────────────┐
+│   APPLICATION   │
+│                 │
+│ Node.js / EC2   │
+└────────┬────────┘
+         │
+         │ MySQL
+         ▼
+┌─────────────────┐
+│      DATA       │
+│                 │
+│ RDS MySQL       │
+└─────────────────┘
 ```
 
 ---
 
-# 📸 Project Evidence
-
-The repository can include screenshots demonstrating the AWS deployment.
-
-Recommended screenshots:
+# 🔐 Security Architecture
 
 ```text
-screenshots/
+                 INTERNET
+                    │
+                    ▼
+             ┌─────────────┐
+             │     ALB     │
+             │   SG-ALB    │
+             └──────┬──────┘
+                    │
+              Port 3000
+                    │
+                    ▼
+             ┌─────────────┐
+             │     EC2     │
+             │   SG-APP    │
+             └──────┬──────┘
+                    │
+              Port 3306
+                    │
+                    ▼
+             ┌─────────────┐
+             │     RDS     │
+             │   SG-DB     │
+             └─────────────┘
+```
+
+Security groups act as virtual firewalls for AWS resources and can restrict database access to the application layer.
+
+---
+
+# 📁 Project Structure
+
+```text
+inventory-management-system/
 │
-├── 01-ec2-instance.png
-├── 02-rds-database.png
-├── 03-rds-available.png
-├── 04-security-groups.png
-├── 05-load-balancer.png
-├── 06-target-group.png
-├── 07-healthy-target.png
-├── 08-frontend.png
-├── 09-backend-api.png
-└── 10-database-operation.png
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── ...
+│
+├── backend/
+│   ├── src/
+│   ├── package.json
+│   ├── .env
+│   └── ...
+│
+└── README.md
 ```
 
-These screenshots demonstrate the deployment without requiring another person to recreate the entire AWS environment.
+> `.env` should not be committed to GitHub.
+
+Add:
+
+```text
+.env
+node_modules/
+```
+
+to `.gitignore`.
 
 ---
 
-# 📊 AWS Architecture Summary
+# 🎯 Project Objective
 
-| Layer | Technology | AWS Service |
-|---|---|---|
-| Presentation | React.js | EC2 |
-| Application | Node.js / Express | EC2 |
-| Database | MySQL | Amazon RDS |
-| Traffic Management | HTTP | Application Load Balancer |
-| Networking | Private/Public Networking | Amazon VPC |
-| Access Control | Firewall Rules | Security Groups |
+The main objective of this project is to understand how a full-stack application can be separated into independent infrastructure layers and deployed using AWS.
 
----
+The project demonstrates:
 
-# 🔒 Security Considerations
-
-The deployment follows basic cloud security practices:
-
-- RDS is not publicly exposed.
-- Database access is restricted to the backend.
-- Security Groups control inbound traffic.
-- Database credentials are stored using environment variables.
-- `.env` is excluded from Git.
-- Only required ports are opened.
-- SSH access should be restricted to the administrator's IP whenever possible.
-
----
-
-# 💰 AWS Cost Consideration
-
-This project uses AWS resources that may incur charges depending on the AWS account, region, and free-tier eligibility.
-
-Resources to check before finishing the project:
-
-- EC2 instances
-- Amazon RDS
+- Three-tier application architecture
+- AWS VPC networking
+- EC2 application deployment
+- Amazon RDS database deployment
 - Application Load Balancer
-- Elastic IPs
-- EBS storage
-
-After completing the demonstration, stop or terminate resources that are no longer required to avoid unexpected charges.
-
----
-
-# 🎓 What I Learned
-
-Through this project, I learned how to:
-
-- Deploy a React application on AWS.
-- Deploy a Node.js backend on EC2.
-- Create and configure an Amazon RDS MySQL database.
-- Connect a backend application to RDS.
-- Configure AWS Security Groups.
-- Understand public and private application layers.
-- Configure an Application Load Balancer.
-- Understand communication between application tiers.
-- Deploy an existing full-stack application using AWS infrastructure.
-- Troubleshoot connectivity between EC2 and RDS.
+- Security Groups
+- Backend-to-database communication
+- Frontend-to-backend communication
+- Cloud-based application deployment
 
 ---
 
-# 🚀 Future Improvements
+# 📚 AWS Services Used
 
-Possible improvements include:
+| AWS Service | Purpose |
+|---|---|
+| Amazon EC2 | Hosts Node.js backend |
+| Amazon RDS | Hosts MySQL database |
+| Application Load Balancer | Routes application traffic |
+| Amazon VPC | Provides network infrastructure |
+| Security Groups | Controls network access |
 
-- HTTPS using AWS Certificate Manager
-- Route 53 custom domain
-- Auto Scaling Group for backend EC2
-- CloudWatch monitoring
-- AWS Secrets Manager
-- Private subnets for backend and RDS
-- NAT Gateway
-- CI/CD using GitHub Actions
-- Docker containerization
-- Infrastructure as Code using Terraform
+---
+
+# 🔗 Useful Links
+
+### Live Application
+
+https://ambika-spare-parts.netlify.app/
+
+### AWS Documentation
+
+- Amazon RDS
+- Amazon EC2
+- Application Load Balancer
+- Amazon VPC
+- Security Groups
 
 ---
 
@@ -670,27 +645,22 @@ Possible improvements include:
 
 **Jay Shinde**
 
-Java Full Stack Developer | AWS | Cloud | DevOps | AI/ML
+Java Full Stack Developer | AWS | React | Node.js | Spring Boot
 
 ---
 
-## ⭐ Project Goal
+# ⭐ Project Summary
 
-The goal of this project is to demonstrate a practical **AWS three-tier architecture** by deploying a real Inventory Management System rather than a simple static demonstration.
+**Ambika Spare Parts Inventory Management System** demonstrates the deployment of a full-stack inventory application using a three-tier architecture.
 
 ```text
 React Frontend
       ↓
-Node.js Backend
-      ↓
-Amazon RDS MySQL
-
-        +
 Application Load Balancer
-        +
-Security Groups
-        +
-AWS VPC
+      ↓
+Node.js Backend — EC2
+      ↓
+MySQL Database — RDS
 ```
 
-This project demonstrates how individual application components can be deployed, secured, and connected independently in a cloud environment.
+The architecture separates the presentation, application, and database layers, while AWS networking and security groups control communication between the components.
